@@ -1,12 +1,12 @@
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser'; // this to fix angular customhammerconfig compatibility//
 import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
-import {FormsModule} from '@angular/forms';  // manually type 
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';  // manually type 
 import {BsDropdownModule, TabsModule } from 'ngx-bootstrap'; // npm install ngx-bootstrap@3.0.1 --save
 import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
-
+import { FileUploadModule } from 'ng2-file-upload';
 
 
 import { AppComponent } from './app.component';
@@ -19,6 +19,7 @@ import { MemberListComponent } from './members/member-list/member-list.component
 import { MessagesComponent } from './messages/messages.component';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
+import { MemberEditComponent } from './members/member-edit/member-edit.component';
 
 
 import { AuthService } from './_services/auth.service'; // quick fix after added provider
@@ -29,6 +30,9 @@ import { AuthGuard } from './_guard/auth.guard';
 import { AlertifyService } from './_services/alertify.service';
 import { MemberDetailResolver } from './_resolvers/member-detail-resolver';
 import { MemberListResolver } from './_resolvers/member-list-resolver';
+import { MemberEditResolver } from './_resolvers/member-edit-resolver';
+import { PreventUnsavedChanges } from './_guard/prevent-unsaved-changes.guards';
+import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
 
 export function tokenGetter() {            // JWtModule to send up Token autometically
    return localStorage.getItem('token');
@@ -52,16 +56,20 @@ export class CustomHammerConfig extends HammerGestureConfig  { // this to fix an
       ListsComponent,
       MemberListComponent,
       MemberCardComponent,
-      MemberDetailComponent
+      MemberDetailComponent,
+      MemberEditComponent,
+      PhotoEditorComponent
    ],
    imports: [
       BrowserModule,
       HttpClientModule,
       FormsModule,
+      ReactiveFormsModule,
       BsDropdownModule.forRoot(),
       TabsModule.forRoot(),
       RouterModule.forRoot(appRoute),
       NgxGalleryModule, // this to fix angular customhammerconfig compatibility//
+      FileUploadModule,
       JwtModule.forRoot({                          // JWtModule to send up Token autometically
          config: {
             tokenGetter,                           // tokenGetter: tokenGetter,
@@ -78,6 +86,8 @@ export class CustomHammerConfig extends HammerGestureConfig  { // this to fix an
       AlertifyService,
       MemberDetailResolver,
       MemberListResolver,
+      MemberEditResolver,
+      PreventUnsavedChanges,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
    ],
    bootstrap: [
