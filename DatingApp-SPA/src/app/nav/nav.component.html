@@ -18,7 +18,7 @@
 
     <div *ngIf ="loggedIn()" class="dropdown" dropdown>
       <span class ="mr-2">
-        <img src ="{{photoUrl}}" alt ="">
+        <img src ="{{photoUrl || '..//..//../assets/user.png'}}" alt =""> <!-- if null go to default photo-->
       </span>
       <a class="dropdown-toggle text-light"  dropdownToggle > <!--where triangle dropdown to be clicked-->
         Welcome {{authService.decodedToken?.unique_name | titlecase}}

@@ -20,7 +20,7 @@ hasBaseDropZoneOver = false;
 baseUrl = environment.apiUrl;
 currentMain: Photo;
   constructor(private authService: AuthService, 
-    private userService: UserService, private alertify: AlertifyService) { }
+              private userService: UserService, private alertify: AlertifyService) { }
 
   ngOnInit() {
     this.initializeUploader();
@@ -35,7 +35,6 @@ currentMain: Photo;
       {
         url: this.baseUrl + 'users/' + this.authService.decodedToken.nameid + '/photos',
         authToken: 'Bearer ' + localStorage.getItem('token'),
-        isHTML5: true,
         allowedFileType: ['image'],
         removeAfterUpload: true,
         autoUpload: false,
@@ -45,6 +44,7 @@ currentMain: Photo;
     this.uploader.onAfterAddingFile = (file) => {file.withCredentials = false; };
 
     this.uploader.onSuccessItem = (item, response, status, headers) => {
+      console.log(response);
       if (response) {
         const res: Photo = JSON.parse(response);
         const photo = {
@@ -55,6 +55,11 @@ currentMain: Photo;
           isMain: res.isMain
         };
         this.photos.push(photo);
+        if (photo.isMain) {
+          this.authService.changeMemberPhoto(photo.url); /* object behaviour - fixing default photo for new registered user */
+          this.authService.currentUser.photoUrl = photo.url; /* keep the main pic when refresh the page */
+          localStorage.setItem('user', JSON.stringify(this.authService.currentUser));
+        }
       }
     };
   }

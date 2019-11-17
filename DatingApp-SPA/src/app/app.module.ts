@@ -1,8 +1,9 @@
 import { BrowserModule, HammerGestureConfig, HAMMER_GESTURE_CONFIG } from '@angular/platform-browser'; // this to fix angular customhammerconfig compatibility//
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
 import { NgModule } from '@angular/core';
 import {HttpClientModule} from '@angular/common/http';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';  // manually type 
-import {BsDropdownModule, TabsModule } from 'ngx-bootstrap'; // npm install ngx-bootstrap@3.0.1 --save
+import {BsDropdownModule, TabsModule, BsDatepickerModule, PaginationModule, ButtonsModule } from 'ngx-bootstrap'; // npm install ngx-bootstrap@3.0.1 --save
 import { RouterModule } from '@angular/router';
 import { JwtModule } from '@auth0/angular-jwt';
 import { NgxGalleryModule } from 'ngx-gallery';
@@ -20,6 +21,7 @@ import { MessagesComponent } from './messages/messages.component';
 import { MemberCardComponent } from './members/member-card/member-card.component';
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
+import {TimeAgoPipe} from 'time-ago-pipe'; // https://www.npmjs.com/package/time-ago-pipe
 
 
 import { AuthService } from './_services/auth.service'; // quick fix after added provider
@@ -58,15 +60,21 @@ export class CustomHammerConfig extends HammerGestureConfig  { // this to fix an
       MemberCardComponent,
       MemberDetailComponent,
       MemberEditComponent,
-      PhotoEditorComponent
+      PhotoEditorComponent,
+      TimeAgoPipe                 // https://www.npmjs.com/package/time-ago-pipe - npm install time-ago-pipe --save
+
    ],
    imports: [
       BrowserModule,
+      BrowserAnimationsModule,
       HttpClientModule,
       FormsModule,
       ReactiveFormsModule,
       BsDropdownModule.forRoot(),
+      BsDatepickerModule.forRoot(), // For Dateform
+      PaginationModule.forRoot(),
       TabsModule.forRoot(),
+      ButtonsModule.forRoot(),
       RouterModule.forRoot(appRoute),
       NgxGalleryModule, // this to fix angular customhammerconfig compatibility//
       FileUploadModule,

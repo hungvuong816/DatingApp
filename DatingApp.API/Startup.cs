@@ -57,6 +57,7 @@ namespace DatingApp.API
                         ValidateAudience = false
                     };
                 });
+            services.AddScoped<LogUserActivity>(); // Action Filter
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -82,8 +83,9 @@ namespace DatingApp.API
                 });
             }
 
-            // app.UseHttpsRedirection();
-            app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            // app.UseHttpsRedirection(); // 
+            // very important to add WithExposedHeaders("Pagination") -otherwisre it is return null from API
+            app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Pagination"));
             app.UseAuthentication();
             app.UseMvc();
         }
