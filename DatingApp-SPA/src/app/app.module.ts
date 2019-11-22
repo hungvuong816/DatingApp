@@ -22,6 +22,8 @@ import { MemberCardComponent } from './members/member-card/member-card.component
 import { MemberDetailComponent } from './members/member-detail/member-detail.component';
 import { MemberEditComponent } from './members/member-edit/member-edit.component';
 import {TimeAgoPipe} from 'time-ago-pipe'; // https://www.npmjs.com/package/time-ago-pipe
+import { MemberMessagesComponent } from './members/member-messages/member-messages.component';
+
 
 
 import { AuthService } from './_services/auth.service'; // quick fix after added provider
@@ -35,6 +37,8 @@ import { MemberListResolver } from './_resolvers/member-list-resolver';
 import { MemberEditResolver } from './_resolvers/member-edit-resolver';
 import { PreventUnsavedChanges } from './_guard/prevent-unsaved-changes.guards';
 import { PhotoEditorComponent } from './members/photo-editor/photo-editor.component';
+import { ListsResolver } from './_resolvers/lists.resolver';
+import { MessagesResolver } from './_resolvers/messages.resolver';
 
 export function tokenGetter() {            // JWtModule to send up Token autometically
    return localStorage.getItem('token');
@@ -61,8 +65,8 @@ export class CustomHammerConfig extends HammerGestureConfig  { // this to fix an
       MemberDetailComponent,
       MemberEditComponent,
       PhotoEditorComponent,
-      TimeAgoPipe                 // https://www.npmjs.com/package/time-ago-pipe - npm install time-ago-pipe --save
-
+      TimeAgoPipe,                 // https://www.npmjs.com/package/time-ago-pipe - npm install time-ago-pipe --save
+      MemberMessagesComponent
    ],
    imports: [
       BrowserModule,
@@ -96,6 +100,8 @@ export class CustomHammerConfig extends HammerGestureConfig  { // this to fix an
       MemberListResolver,
       MemberEditResolver,
       PreventUnsavedChanges,
+      ListsResolver,
+      MessagesResolver,
       { provide: HAMMER_GESTURE_CONFIG, useClass: CustomHammerConfig }
    ],
    bootstrap: [
