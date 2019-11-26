@@ -33,6 +33,26 @@ namespace DatingApp.API
         public IConfiguration Configuration { get; }
 
         // This method gets called by the runtime. Use this method to add services to the container.
+
+        public void ConfigureDevelopmentServices(IServiceCollection services)
+        {
+             services.AddDbContext<DataContext>(x => {
+                 x.UseLazyLoadingProxies();
+                 x.UseSqlite(Configuration.GetConnectionString("DefaultConnection"));
+             });
+
+             ConfigureServices(services);
+        }
+        
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x => {
+                 x.UseLazyLoadingProxies();
+                 x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection"));
+             }); // Change UseMySql to UseSqlServer to deploy in Azure since we chose SQL Database on the set up
+
+             ConfigureServices(services);
+        }
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
@@ -69,25 +89,36 @@ namespace DatingApp.API
             }
             else
             {
-                app.UseExceptionHandler(builder =>{
-                    builder.Run(async context => {
-                        context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                // app.UseExceptionHandler(builder =>{
+                //     builder.Run(async context => {
+                //         context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
 
-                        var error = context.Features.Get<IExceptionHandlerFeature>();
-                        if (error != null)
-                        {
-                            context.Response.AddApplicationError(error.Error.Message);
-                            await context.Response.WriteAsync(error.Error.Message);
-                        }
-                    });
-                });
+                //         var error = context.Features.Get<IExceptionHandlerFeature>();
+                //         if (error != null)
+                //         {
+                //             context.Response.AddApplicationError(error.Error.Message);
+                //             await context.Response.WriteAsync(error.Error.Message);
+                //         }
+                //     });
+                // });
+                app.UseHsts(); // 191 open content to client 
             }
+            app.UseDeveloperExceptionPage(); 
+            app.UseHttpsRedirection(); // 191 open content to client 
 
-            // app.UseHttpsRedirection(); // 
+            // app.UseHttpsRedirection(); // turn off with development
             // very important to add WithExposedHeaders("Pagination") -otherwisre it is return null from API
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod().WithExposedHeaders("Pagination"));
             app.UseAuthentication();
-            app.UseMvc();
+            app.UseDefaultFiles(); // 178 for 2.2 only so Angular can run from wwwroot
+            app.UseStaticFiles(); // for 2.2 only
+            app.UseMvc(routes => // 178 to prevent from refresh missing info, tell API, if not tell API 
+            {                       // if does not found, use fall back and this specific action
+                routes.MapSpaFallbackRoute( 
+                    name: "spa-fallback", // give it a name 
+                    defaults: new {controller = "Fallback", action = "Index"} 
+                );
+            });
         }
     }
 }
